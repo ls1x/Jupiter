@@ -45,6 +45,7 @@ void Payload::print() const{
 			}
 		}
 		std::string initial = std::string(arr);
+		fullPayload += initial;
 		delete[] arr;
 	}
 	if (listSize > 0){
@@ -58,10 +59,13 @@ void Payload::print() const{
 			if (answer1 == 'y' || answer1 == 'Y'){
 				// do yes
 				std::cout << "You chose yes.\n";
-				//Hex * arrHex[listSize];
+				std::string * arrHex = new std::string[listSize];
 				for (unsigned int i {}; i < listSize; i++){
-					//arrHex[i] 
+					arrHex[i] = Hex::hexBuild(4, (unsigned int)payloadList[i]);
+					fullPayload += arrHex[i];
 				}
+				delete[] arrHex;
+				std::cout << fullPayload << "\n";
 				break;
 			} else if (answer1 == 'n' || answer1 == 'N'){
 				// do no
@@ -83,6 +87,6 @@ void Payload::print() const{
 // - [X] showAddress() - mostra os endereços armazenados
 // - [X] addOffset() - soma dois endereçoss
 // - [X] loadInitialOffset() - carrega o buffer inicial
-// - [X] deleteAddress - deleta um endereço do vetor
-// - [ ] printPayload() - mostra o payload gerado no stdout
-// - [ ] outputPayload - cria um arquivo com o payload gerado
+// - [X] deleteAddress() - deleta um endereço do vetor
+// - [X] printPayload() - mostra o payload gerado no stdout
+// - [ ] outputPayload() - cria um arquivo com o payload gerado

@@ -2,6 +2,7 @@
 #define PANEL_HPP
 
 #include <string>
+#include "../include/payload.hpp"
 
 class Panel {
 
@@ -11,7 +12,8 @@ private:
 
 public:
 	Panel(std::string n);
-	int panelCore() const;
+	int panelCore(Payload * p1) const;
+	void showName() const;
 };
 
 #endif

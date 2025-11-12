@@ -5,13 +5,8 @@
 
 class Hex {
 
-private:
-	unsigned int hexValue {};
-	unsigned int hexSize {};
-
 public:
-	Hex(unsigned int hValue, unsigned int hSize);
-	std::string hexBuild() const;
+	static std::string hexBuild(unsigned int hexSize, unsigned int hexValue);
 };
 
 #endif
