@@ -14,12 +14,13 @@ private:
 	std::vector<std::string> nameList {};
 
 public:
-	void loadAddress(unsigned int value, std::string name);
+	void loadAddress(long unsigned int value, std::string name);
 	void showAddresses() const;
 	void addOffset(unsigned int id1, unsigned int id2, std::string name);
 	void loadInitialOffset(unsigned int size);
 	void deleteAddress(unsigned int index);
 	void print() const;
+	void output() const;
 };
 
 #endif

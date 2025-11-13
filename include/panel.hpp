@@ -13,7 +13,7 @@ private:
 public:
 	Panel(std::string n);
 	int panelCore(Payload * p1) const;
-	void showName() const;
+	void showName(std::string n) const;
 };
 
 #endif

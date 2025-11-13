@@ -3,7 +3,7 @@
 #include "../include/payload.hpp"
 #include "../include/hex.hpp"
 
-void Payload::loadAddress(unsigned int value, std::string name){
+void Payload::loadAddress(long unsigned int value, std::string name){
 	payloadList.push_back(value);
 	nameList.push_back(name);
 	listSize++;
@@ -11,7 +11,7 @@ void Payload::loadAddress(unsigned int value, std::string name){
 
 void Payload::showAddresses() const{
 	for (unsigned int i {}; i < listSize; i++){
-		std::cout << "Id: " << i << " Address: 0x" << std::hex << payloadList[i] << " Name: " << nameList[i] << "\n";
+		std::cout << "Id: " << i << " | Address: 0x" << std::hex << payloadList[i] << " | Name: " << nameList[i] << "\n";
 	}
 }
 
@@ -36,13 +36,10 @@ void Payload::deleteAddress(unsigned int index){
 void Payload::print() const{
 	std::string fullPayload {};
 	if (initialOffset > 0){
-		char * arr = new char[initialOffset];
+		char * arr = new char[initialOffset + 1];
+		arr[initialOffset + 1] = '\0';
 		for (unsigned int i{}; i < initialOffset; i++){
-			if (i == (initialOffset - 1)){
-				arr[i] = '\0';
-			} else {
-				arr[i] = 'a';
-			}
+			arr[i] = 'a';
 		}
 		std::string initial = std::string(arr);
 		fullPayload += initial;
@@ -50,15 +47,13 @@ void Payload::print() const{
 	}
 	if (listSize > 0){
 		char answer1 {};
-		std::cout << "You have "  << listSize << " addresses stored.\n";
-		std::cout << "Do you want to inject all of them in order?\n";
-		std::cout << "Use command 'show' to see the current order.\n";
-		std::cout << "Y/N? ";
+		std::cout << "[INFO] You have "  << listSize << " addresses stored.\n";
+		std::cout << "[+] Do you want to inject all of them in order?\n";
+		std::cout << "[+] Use command 'show' to see the current order.\n";
+		std::cout << "[+] Y/N? ";
 		while (true){
 			std::cin >> answer1;
 			if (answer1 == 'y' || answer1 == 'Y'){
-				// do yes
-				std::cout << "You chose yes.\n";
 				std::string * arrHex = new std::string[listSize];
 				for (unsigned int i {}; i < listSize; i++){
 					arrHex[i] = Hex::hexBuild(4, (unsigned int)payloadList[i]);
@@ -68,16 +63,19 @@ void Payload::print() const{
 				std::cout << fullPayload << "\n";
 				break;
 			} else if (answer1 == 'n' || answer1 == 'N'){
-				// do no
-				std::cout << "You chose no.\n";
+				std::cout << "[+] You chose to not continue.\n";
 				break;
 			} else {
-				std::cout << "Invalid answer. Type Y/N.\n";
+				std::cout << "[+] Invalid answer. Type Y/N.\n";
 			}
 		}
 	}
 	// Essa função é bem mais complexa, eu tenho que antes escolher
 	// quais endereços serão utilizados e qual ordem.
+}
+
+void Payload::output() const{
+	std::cout << "[+] Coming soon.\n";
 }
 
 // A função delete address tem cara de que vai dar merda.
