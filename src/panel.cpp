@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <limits>
 #include "../include/panel.hpp"
 #include "../include/payload.hpp"
 
@@ -36,35 +37,50 @@ int Panel::panelCore(Payload * p1) const{
 		std::cout << "[+] Choose an offset size.\n";
 		this->showName("Offset");
 		while (!(std::cin >> offsetSize)){
-			std::cout << "[ERR] Invalid input. Please enter an integer: ";
+			std::cout << "[ERR] Invalid input. Please enter an integer.\n";
+			this->showName("Offset");
 			// Tenho que arrumar aqui!
-			//std::cin.clear(); 
-			//std::cin.ignore(std::numeric_limits<std::streamsize>::std::max(),'\n');
+			std::cin.clear(); 
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+		}
+		if (offsetSize > 200){
+			std::cout << "[INFO] You have set an offset size higher than 200 characters.\n";
+			std::cout << "[INFO] If this value was set by mistake please type 'offset' and correct the value.\n";
 		}
 		p1->loadInitialOffset(offsetSize);
 		std::cout << "[+] Set offset of " << (int)offsetSize << " bytes.\n";
 	} else if (command == "load"){
 		std::string address {};
 		std::string addressName {};
+		unsigned long int addr {0};
 		std::cout << "[+] Enter an address, format: 'ff12ff34'.\n";
-		this->showName("LoadAddress");
-		while (!(std::cin >> address)){
-			std::cout << "[ERR] Invalid input. Please enter an integer: ";
-			// Tenho que arrumar aqui!
-			//std::cin.clear(); 
-			//std::cin.ignore(std::numeric_limits<std::streamsize>::std::max(),'\n');
+		while (true){
+			this->showName("LoadAddress");
+			std::cin >> address;
+			try {
+				addr = std::stoul(address, 0, 16);
+				break;
+			} catch (const std::invalid_argument&){
+				std::cout << "[ERR] Invalid input. Please enter a Hex number.\n";
+			} catch (const std::out_of_range&){
+				std::cout << "[ERR] Number too big. Please enter a smaller hex number.\n";
+			}
 		}
 		std::cout << "[+] Enter an address name.\n";
 		this->showName("AddressName");
 		std::cin >> addressName;
-		unsigned long int addr = std::stoul(address, 0, 16);
 		p1->loadAddress(addr, addressName);
 		std::cout << "[+] Added address " << addressName << " - 0x" << std::hex << addr << ".\n";
 	} else if (command == "delete"){
 		unsigned int index {};
 		std::cout << "[+] Enter the index of the address you want to delete.\n";
 		this->showName("DeleteAddress");
-		std::cin >> index;
+		while (!(std::cin >> index) || index > p1->checkSize()){
+			std::cout << "[ERR] There is no address stored in index" << index << "\n";
+			this->showName("DeleteAddress");
+			std::cin.clear(); 
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+		}
 		p1->deleteAddress(index);
 		std::cout << "[+] Address index " << index << " deleted.\n";
 		std::cout << "[INFO] Type 'show' to see the current stored addresses.\n";	

@@ -1,4 +1,4 @@
-TARGET = bin/ExploitGen.bin
+TARGET = bin/Jupiter.bin
 SRC = $(wildcard src/*.cpp)
 OBJ = $(patsubst src/%.cpp, obj/%.o, $(SRC))
 

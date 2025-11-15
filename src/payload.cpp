@@ -78,6 +78,10 @@ void Payload::output() const{
 	std::cout << "[+] Coming soon.\n";
 }
 
+unsigned int Payload::checkSize() const{
+	return listSize;
+}
+
 // A função delete address tem cara de que vai dar merda.
 
 // Comandos:

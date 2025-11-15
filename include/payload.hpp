@@ -21,6 +21,7 @@ public:
 	void deleteAddress(unsigned int index);
 	void print() const;
 	void output() const;
+	unsigned int checkSize() const;
 };
 
 #endif
