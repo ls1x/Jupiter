@@ -10,6 +10,7 @@ private:
 	std::string name {};
 	void showName(std::string n) const;
 	void Help() const;
+	int inputLoop(std::string n, std::string mode, unsigned long int * out) const;
 	int Offset(Payload * p1) const;
 	int Load(Payload * p1) const;
 	int Delete(Payload * p1) const;

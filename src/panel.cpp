@@ -26,22 +26,42 @@ void Panel::showName(std::string n) const{
 	std::cout << n << "❯ ";
 }
 
+int Panel::inputLoop(std::string n, std::string mode, unsigned long int * out) const{
+	std::string stringVal {};
+	unsigned long int val {};
+	while (true){
+		this->showName(n);
+		std::cin >> stringVal;
+		if (stringVal == "cancel"){
+			std::cout << "[+] You cancelled the operation.\n";
+			return 0;
+		}
+		try {
+			val = std::stoul(stringVal, 0, 16);
+			break;
+		} catch (const std::invalid_argument&){
+			std::cout << "[ERR] Invalid input. Please enter a " << mode << " number.\n";
+		} catch (const std::out_of_range&){
+			std::cout << "[ERR] Number too big. Please enter a smaller " << mode << " number.\n";
+		}
+	}
+	*out = val;
+	return 1;
+}
+
 int Panel::Offset(Payload * p1) const{
-	unsigned int offsetSize {};
+	unsigned long int offsetSize {};
 	std::cout << "[+] Choose an offset size.\n";
-	this->showName("Offset");
-	while (!(std::cin >> offsetSize)){
-		std::cout << "[ERR] Invalid input. Please enter an integer.\n";
-		this->showName("Offset");
-		std::cin.clear(); 
-		std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+	if (this->inputLoop("Offset", "integer", &offsetSize) == 0){
+		// User cancelled the operation
+		return 0;
 	}
 	if (offsetSize > 200){
 		std::cout << "[INFO] You have set an offset size higher than 200 characters.\n";
 		std::cout << "[INFO] If this value was set by mistake please type 'offset' and correct the value.\n";
 	}
-	p1->loadInitialOffset(offsetSize);
-	std::cout << "[+] Set offset of " << (int)offsetSize << " bytes.\n";
+	p1->loadInitialOffset((unsigned int)offsetSize);
+	std::cout << "[+] Set offset of " << offsetSize << " bytes.\n";
 	return 0;
 }
 
@@ -50,21 +70,9 @@ int Panel::Load(Payload * p1) const{
 	std::string addressName {};
 	unsigned long int addr {0};
 	std::cout << "[+] Enter an address, format: 'ff12ff34'.\n";
-	while (true){
-		this->showName("LoadAddress");
-		std::cin >> address;
-		if (address == "cancel"){
-			std::cout << "[+] You cancelled the operation.\n";
-			return 0;
-		}
-		try {
-			addr = std::stoul(address, 0, 16);
-			break;
-		} catch (const std::invalid_argument&){
-			std::cout << "[ERR] Invalid input. Please enter a Hex number.\n";
-		} catch (const std::out_of_range&){
-			std::cout << "[ERR] Number too big. Please enter a smaller hex number.\n";
-		}
+	if (this->inputLoop("LoadAddress", "hex", &addr) == 0){
+		// User cancelled the operation
+		return 0;
 	}
 	std::cout << "[+] Enter an address name.\n";
 	this->showName("AddressName");
