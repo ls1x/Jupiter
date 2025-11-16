@@ -4,6 +4,8 @@
 #include "../include/panel.hpp"
 #include "../include/payload.hpp"
 
+#define CANCEL_OPERATION 0
+
 Panel::Panel(std::string n){
 	name = n;
 }
@@ -17,6 +19,7 @@ void Panel::Help() const{
 	std::cout << "[C] delete  - Deletes an address.\n";
 	std::cout << "[C] print   - Prints the payload on stdout.\n";
 	std::cout << "[C] output  - Outputs the payload to file.\n";
+	std::cout << "[C] cancel  - Cancels any command.\n";
 	std::cout << "[C] exit    - Leave the application.\n";
 	std::cout << "[C] help    - Prints this.\n";
 }
@@ -83,40 +86,42 @@ int Panel::Load(Payload * p1) const{
 }
 
 int Panel::Delete(Payload * p1) const{
-	unsigned int index {};
-	bool validInput = false;
+	unsigned long int index {};
 	std::cout << "[+] Enter the index of the address you want to delete.\n";
-	while (!validInput){
-		this->showName("DeleteAddress");
-		std::cin >> index;
-		if (std::cin.fail() || index > p1->checkSize()){
-			std::cout << "[ERR] There is no address stored in index" << index << "\n";
-			std::cin.clear();
-			std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
-		} else {
-			validInput = true;
-		}
+	if (this->inputLoop("DeleteAddress", "integer", &index) == 0){
+		// User cancelled the operation
+		return 0;
 	}
-	p1->deleteAddress(index);
+	if (index > p1->checkSize()){
+		std::cout << "[ERR] There is no address stored in index" << index << "\n";
+		std::cout << "[ERR] Operation cancelled.\n";
+		index = 0;
+		return 0;
+	}
+	p1->deleteAddress((unsigned int)index);
 	std::cout << "[+] Address index " << index << " deleted.\n";
 	std::cout << "[INFO] Type 'show' to see the current stored addresses.\n";
 	return 0;
 }
 
 int Panel::Add(Payload * p1) const{
-	unsigned int index1 {};
-	unsigned int index2 {};
+	unsigned long int index1 {};
+	unsigned long int index2 {};
 	std::string addressName;
 	std::cout << "[+] Enter the first index you want to add.\n";
-	this->showName("FirstIndex");
-	std::cin >> index1;
+	if (this->inputLoop("FirstIndex", "integer", &index1) == 0){
+		// User cancelled the operation
+		return 0;
+	}
 	std::cout << "[+] Enter the second index you want to add.\n";
-	this->showName("SecondIndex");
-	std::cin >> index2;
+	if (this->inputLoop("SecondIndex", "integer", &index2) == 0){
+		// User cancelled the operation
+		return 0;
+	}
 	std::cout << "[+] Enter a name for this new address.\n";
 	this->showName("AddressName");
 	std::cin >> addressName;
-	p1->addOffset(index1, index2, addressName);
+	p1->addOffset((unsigned int)index1, (unsigned int)index2, addressName);
 	std::cout << "[+] Added address " << addressName << ".\n";
 	std::cout << "[+] Type show to see the newly added address.\n";
 	return 0;
@@ -147,6 +152,8 @@ int Panel::panelCore(Payload * p1) const{
 	} else if (command == "debug"){
 		unsigned int testSize = p1->checkSize();
 		std::cout << "[+] ListSize: " << testSize << "\n";
+	} else if (command == "cancel"){
+		std::cout << "[INFO] No command got cancelled.\n";
 	} else {
 		std::cout << "[ERR]: Unrecognized command. Try command 'help'.\n";
 	} 
