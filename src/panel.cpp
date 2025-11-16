@@ -57,6 +57,10 @@ int Panel::panelCore(Payload * p1) const{
 		while (true){
 			this->showName("LoadAddress");
 			std::cin >> address;
+			if (address == "cancel"){
+				std::cout << "[+] You cancelled the operation.\n";
+				return 0;
+			}
 			try {
 				addr = std::stoul(address, 0, 16);
 				break;
@@ -73,13 +77,18 @@ int Panel::panelCore(Payload * p1) const{
 		std::cout << "[+] Added address " << addressName << " - 0x" << std::hex << addr << ".\n";
 	} else if (command == "delete"){
 		unsigned int index {};
+		bool validInput = false;
 		std::cout << "[+] Enter the index of the address you want to delete.\n";
-		this->showName("DeleteAddress");
-		while (!(std::cin >> index) || index > p1->checkSize()){
-			std::cout << "[ERR] There is no address stored in index" << index << "\n";
+		while (!validInput){
 			this->showName("DeleteAddress");
-			std::cin.clear(); 
-			std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+			std::cin >> index;
+			if (std::cin.fail() || index > p1->checkSize()){
+				std::cout << "[ERR] There is no address stored in index" << index << "\n";
+				std::cin.clear();
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+			} else {
+				validInput = true;
+			}
 		}
 		p1->deleteAddress(index);
 		std::cout << "[+] Address index " << index << " deleted.\n";
@@ -108,7 +117,11 @@ int Panel::panelCore(Payload * p1) const{
 		p1->print();
 	} else if (command == "help"){
 		this->Help();
-	} else {
+	} else if (command == "debug"){
+		unsigned int testSize = p1->checkSize();
+		std::cout << "[+] ListSize: " << testSize << "\n";
+	} 
+	else {
 		std::cout << "[ERR]: Unrecognized command. Try command 'help'.\n";
 	} 
 	return 0;

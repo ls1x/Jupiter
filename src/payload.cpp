@@ -37,23 +37,25 @@ void Payload::print() const{
 	std::string fullPayload {};
 	if (initialOffset > 0){
 		char * arr = new char[initialOffset + 1];
-		arr[initialOffset + 1] = '\0';
+		//arr[initialOffset + 1] = '\0';
 		for (unsigned int i{}; i < initialOffset; i++){
 			arr[i] = 'a';
 		}
-		std::string initial = std::string(arr);
+		arr[initialOffset] = '\0';
+		std::string initial {}; 
+		initial = std::string(arr);
 		fullPayload += initial;
 		delete[] arr;
 	}
 	if (listSize > 0){
-		char answer1 {};
+		std::string answer1 {};
 		std::cout << "[INFO] You have "  << listSize << " addresses stored.\n";
 		std::cout << "[+] Do you want to inject all of them in order?\n";
 		std::cout << "[+] Use command 'show' to see the current order.\n";
 		std::cout << "[+] Y/N? ";
 		while (true){
 			std::cin >> answer1;
-			if (answer1 == 'y' || answer1 == 'Y'){
+			if (answer1 == "y" || answer1 == "Y"){
 				std::string * arrHex = new std::string[listSize];
 				for (unsigned int i {}; i < listSize; i++){
 					arrHex[i] = Hex::hexBuild(4, (unsigned int)payloadList[i]);
@@ -62,14 +64,16 @@ void Payload::print() const{
 				delete[] arrHex;
 				std::cout << fullPayload << "\n";
 				break;
-			} else if (answer1 == 'n' || answer1 == 'N'){
+			} else if (answer1 == "n" || answer1 == "N"){
 				std::cout << "[+] You chose to not continue.\n";
 				break;
 			} else {
 				std::cout << "[+] Invalid answer. Type Y/N.\n";
 			}
 		}
-	}
+	} else {
+		std::cout << fullPayload << "\n";
+	} 
 	// Essa função é bem mais complexa, eu tenho que antes escolher
 	// quais endereços serão utilizados e qual ordem.
 }
