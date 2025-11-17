@@ -86,7 +86,6 @@ unsigned int Payload::checkSize() const{
 	return listSize;
 }
 
-// A função delete address tem cara de que vai dar merda.
 
 // Comandos:
 // - [X] loadAddress() - carrega um endereço
