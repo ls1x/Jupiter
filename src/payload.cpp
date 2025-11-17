@@ -34,6 +34,15 @@ void Payload::deleteAddress(unsigned int index){
 }
 
 void Payload::print() const{
+	if (payload == ""){
+		std::cout << "[INFO] Payload empty.\n";
+		std::cout << "[INFO] Try to use 'generate' first.\n";
+	} else {
+		std::cout << "[+] " << payload << "\n";
+	}
+}
+
+void Payload::generatePayload(){
 	std::string fullPayload {};
 	if (initialOffset > 0){
 		char * arr = new char[initialOffset + 1];
@@ -62,7 +71,9 @@ void Payload::print() const{
 					fullPayload += arrHex[i];
 				}
 				delete[] arrHex;
-				std::cout << fullPayload << "\n";
+				payload = fullPayload;
+				std::cout << "[+] Payload generated. Use 'print' to see the results.\n";
+				std::cout << "[+] You can also use 'output' to output it to a file.\n";
 				break;
 			} else if (answer1 == "n" || answer1 == "N"){
 				std::cout << "[+] You chose to not continue.\n";
@@ -72,8 +83,10 @@ void Payload::print() const{
 			}
 		}
 	} else {
-		std::cout << fullPayload << "\n";
-	} 
+		std::cout << "[+] Payload generated. Use 'print' to see the results.\n";
+		std::cout << "[+] You can also use 'output' to output it to a file.\n";
+		payload = fullPayload;
+	}
 	// Essa função é bem mais complexa, eu tenho que antes escolher
 	// quais endereços serão utilizados e qual ordem.
 }
