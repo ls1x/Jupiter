@@ -40,7 +40,11 @@ int Panel::inputLoop(std::string n, std::string mode, unsigned long int * out) c
 			return 0;
 		}
 		try {
-			val = std::stoul(stringVal, 0, 16);
+			if (mode == "integer"){
+				val = std::stoul(stringVal, 0, 10);
+			} else {
+				val = std::stoul(stringVal, 0, 16);
+			}
 			break;
 		} catch (const std::invalid_argument&){
 			std::cout << "[ERR] Invalid input. Please enter a " << mode << " number.\n";
@@ -72,7 +76,7 @@ int Panel::Load(Payload * p1) const{
 	std::string address {};
 	std::string addressName {};
 	unsigned long int addr {0};
-	std::cout << "[+] Enter an address, format: 'ff12ff34'.\n";
+	std::cout << "[+] Enter an address, format: '656b756c'.\n";
 	if (this->inputLoop("LoadAddress", "hex", &addr) == 0){
 		// User cancelled the operation
 		return 0;
@@ -92,8 +96,12 @@ int Panel::Delete(Payload * p1) const{
 		// User cancelled the operation
 		return 0;
 	}
-	if (index > p1->checkSize()){
-		std::cout << "[ERR] There is no address stored in index" << index << "\n";
+	if (p1->checkSize() <= 0){
+		std::cout << "[ERR]: There are no addresses stored currently.\n";
+		return 0;
+	} 
+	if (index > p1->checkSize() - 1){
+		std::cout << "[ERR] There is no address stored in index " << index << "\n";
 		std::cout << "[ERR] Operation cancelled.\n";
 		index = 0;
 		return 0;
@@ -116,6 +124,16 @@ int Panel::Add(Payload * p1) const{
 	std::cout << "[+] Enter the second index you want to add.\n";
 	if (this->inputLoop("SecondIndex", "integer", &index2) == 0){
 		// User cancelled the operation
+		return 0;
+	}
+	if (p1->checkSize() <= 0){
+		std::cout << "[ERR] There are no addresses stored currently. Operation Impossible.\n";
+		std::cout << "[ERR] Operation cancelled.\n";
+		return 0;
+	}
+	if (index1 > p1->checkSize() - 1 || index2 > p1->checkSize()){
+		std::cout << "[ERR] One or both of your selected indexes does not have an address stored.\n";
+		std::cout << "[ERR] Operation cancelled.\n";
 		return 0;
 	}
 	std::cout << "[+] Enter a name for this new address.\n";
