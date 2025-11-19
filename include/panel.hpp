@@ -15,6 +15,7 @@ private:
 	int Load(Payload * p1) const;
 	int Delete(Payload * p1) const;
 	int Add(Payload * p1) const;
+	int Output(Payload * p1) const;
 
 public:
 	Panel(std::string n);

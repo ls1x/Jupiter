@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include <fstream>
 #include "../include/payload.hpp"
 #include "../include/hex.hpp"
 
@@ -91,8 +92,14 @@ void Payload::generatePayload(){
 	// quais endereços serão utilizados e qual ordem.
 }
 
-void Payload::output() const{
-	std::cout << "[+] Coming soon.\n";
+void Payload::output(std::string filename) const{
+	std::fstream PTR_file(filename, PTR_file.binary | PTR_file.out);
+	if (!PTR_file.is_open()){
+		std::cerr << "[ERR]: Unable to open file!\n";
+	} else {
+		PTR_file << payload;
+		std::cout << "[+] The payload was successfully output to the file " << filename << "\n";
+	}
 }
 
 unsigned int Payload::checkSize() const{

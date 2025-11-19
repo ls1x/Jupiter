@@ -146,6 +146,15 @@ int Panel::Add(Payload * p1) const{
 	return 0;
 }
 
+int Panel::Output(Payload * p1) const{
+	std::string filename {};
+	std::cout << "[+] Enter the name of the file that will receive the payload.\n";
+	this->showName("Output");
+	std::cin >> filename;
+	p1->output(filename);
+	return 0;
+}
+
 int Panel::panelCore(Payload * p1) const{
 	std::string command {};
 	this->showName("Jupiter");
@@ -161,7 +170,7 @@ int Panel::panelCore(Payload * p1) const{
 	} else if (command == "add"){
 		this->Add(p1);
 	} else if (command == "output"){
-		p1->output();
+		this->Output(p1);
 	} else if (command == "show"){
 		p1->showAddresses();
 	} else if (command == "generate"){

@@ -22,7 +22,7 @@ public:
 	void deleteAddress(unsigned int index);
 	void generatePayload();
 	void print() const;
-	void output() const;
+	void output(std::string filename) const;
 	unsigned int checkSize() const;
 };
 
