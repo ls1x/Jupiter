@@ -12,16 +12,17 @@ Panel::Panel(std::string n){
 
 void Panel::Help() const{
 	std::cout << "[+] Available Commands:\n";
-	std::cout << "[C] offset  - Choose initial payload offset.\n";
-	std::cout << "[C] load    - Loads an address.\n";
-	std::cout << "[C] add     - Adds two addresses or offsets.\n";
-	std::cout << "[C] show    - Show stored addresses.\n";
-	std::cout << "[C] delete  - Deletes an address.\n";
-	std::cout << "[C] print   - Prints the payload on stdout.\n";
-	std::cout << "[C] output  - Outputs the payload to file.\n";
-	std::cout << "[C] cancel  - Cancels any command.\n";
-	std::cout << "[C] exit    - Leave the application.\n";
-	std::cout << "[C] help    - Prints this.\n";
+	std::cout << "[C] offset    - Choose initial payload offset.\n";
+	std::cout << "[C] load      - Loads an address.\n";
+	std::cout << "[C] add       - Adds two addresses or offsets.\n";
+	std::cout << "[C] show      - Show stored addresses.\n";
+	std::cout << "[C] delete    - Deletes an address.\n";
+	std::cout << "[C] generate  - Generate the payload.\n";
+	std::cout << "[C] print     - Prints the payload on stdout.\n";
+	std::cout << "[C] output    - Outputs the payload to file.\n";
+	std::cout << "[C] cancel    - Cancels any command.\n";
+	std::cout << "[C] exit      - Leave the application.\n";
+	std::cout << "[C] help      - Prints this.\n";
 }
 
 void Panel::showName(std::string n) const{
@@ -145,6 +146,15 @@ int Panel::Add(Payload * p1) const{
 	return 0;
 }
 
+int Panel::Output(Payload * p1) const{
+	std::string filename {};
+	std::cout << "[+] Enter the name of the file that will receive the payload.\n";
+	this->showName("Output");
+	std::cin >> filename;
+	p1->output(filename);
+	return 0;
+}
+
 int Panel::panelCore(Payload * p1) const{
 	std::string command {};
 	this->showName("Jupiter");
@@ -160,9 +170,11 @@ int Panel::panelCore(Payload * p1) const{
 	} else if (command == "add"){
 		this->Add(p1);
 	} else if (command == "output"){
-		p1->output();
+		this->Output(p1);
 	} else if (command == "show"){
 		p1->showAddresses();
+	} else if (command == "generate"){
+		p1->generatePayload();
 	} else if (command == "print"){
 		p1->print();
 	} else if (command == "help"){
