@@ -24,8 +24,17 @@ void Payload::addOffset(unsigned int id1, unsigned int id2, std::string name){
 	listSize++;	
 }
 
-void Payload::loadInitialOffset(unsigned int size){
-	initialOffset = size;
+std::string Payload::loadOffset(unsigned int size){
+	std::string offset {};
+	char * arr = new char[size + 1];
+	for (unsigned int i{}; i < size; i++){
+		arr[i] = 'a';
+	}
+	arr[size] = '\0';
+	std::string initial {}; 
+	offset = std::string(arr);
+	delete[] arr;
+	return offset;
 }
 
 void Payload::deleteAddress(unsigned int index){
@@ -43,20 +52,9 @@ void Payload::print() const{
 	}
 }
 
-void Payload::generatePayload(){
-	std::string fullPayload {};
-	if (initialOffset > 0){
-		char * arr = new char[initialOffset + 1];
-		//arr[initialOffset + 1] = '\0';
-		for (unsigned int i{}; i < initialOffset; i++){
-			arr[i] = 'a';
-		}
-		arr[initialOffset] = '\0';
-		std::string initial {}; 
-		initial = std::string(arr);
-		fullPayload += initial;
-		delete[] arr;
-	}
+void Payload::generatePayload(unsigned int size){
+	std::string result {};
+	std::string initialoffset = this->loadOffset(size);
 	if (listSize > 0){
 		std::string answer1 {};
 		std::cout << "[INFO] You have "  << listSize << " addresses stored.\n";
