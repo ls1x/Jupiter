@@ -12,12 +12,14 @@ Panel::Panel(std::string n){
 
 void Panel::Help() const{
 	std::cout << "[+] Available Commands:\n";
-	std::cout << "[C] offset    - Choose initial payload offset.\n";
+	std::cout << "[C] offset    - Adds string offset string.\n";
+	std::cout << "[C] string    - Appends custom string to the payload.\n";
 	std::cout << "[C] load      - Loads an address.\n";
 	std::cout << "[C] add       - Adds two addresses or offsets.\n";
 	std::cout << "[C] show      - Show stored addresses.\n";
 	std::cout << "[C] delete    - Deletes an address.\n";
-	std::cout << "[C] generate  - Generate the payload.\n";
+	std::cout << "[C] generate  - Insert addresses to the payload.\n";
+	std::cout << "[C] clean     - Cleans the payload.\n";
 	std::cout << "[C] print     - Prints the payload on stdout.\n";
 	std::cout << "[C] output    - Outputs the payload to file.\n";
 	std::cout << "[C] cancel    - Cancels any command.\n";
@@ -68,7 +70,7 @@ int Panel::Offset(Payload * p1) const{
 		std::cout << "[INFO] You have set an offset size higher than 200 characters.\n";
 		std::cout << "[INFO] If this value was set by mistake please type 'offset' and correct the value.\n";
 	}
-	p1->loadInitialOffset((unsigned int)offsetSize);
+	p1->loadOffset((unsigned int)offsetSize);
 	std::cout << "[+] Set offset of " << offsetSize << " bytes.\n";
 	return 0;
 }
@@ -155,6 +157,41 @@ int Panel::Output(Payload * p1) const{
 	return 0;
 }
 
+int Panel::Generate(Payload * p1) const{
+	unsigned long int index {};
+	std::cout << "[+] Choose the index of the address to be inserted into the payload.\n";
+	if (this->inputLoop("Generate", "integer", &index) == 0){
+		// User cancelled the operation
+		return 0;
+	}
+	if (index > p1->checkSize() - 1){
+		std::cout << "[ERR] There is no address stored in index " << index << "\n";
+		std::cout << "[ERR] Operation cancelled.\n";
+		index = 0;
+		return 0;
+	}
+	p1->generatePayload((unsigned int)index);
+	return 0;
+}
+
+int Panel::String(Payload * p1) const{
+	std::string str {};
+	while (true){
+		this->showName("CustomString");
+		std::cout << "[+] Type your custom string.\n"
+		std::cin >> str;
+		if (str == "cancel"){
+			std::cout << "[+] You cancelled the operation.\n";
+			return 0;
+		} else {
+			break;
+		}	
+	}
+	p1->addString(str);
+	std::cout << "[+] Custom string added\n";
+	return 0;
+}
+
 int Panel::panelCore(Payload * p1) const{
 	std::string command {};
 	this->showName("Jupiter");
@@ -171,14 +208,19 @@ int Panel::panelCore(Payload * p1) const{
 		this->Add(p1);
 	} else if (command == "output"){
 		this->Output(p1);
-	} else if (command == "show"){
-		p1->showAddresses();
 	} else if (command == "generate"){
-		p1->generatePayload();
-	} else if (command == "print"){
-		p1->print();
+		this->Generate(p1);
+	} else if (command == "string"){
+		this->String(p1);
 	} else if (command == "help"){
 		this->Help();
+	} else if (command == "show"){
+		p1->showAddresses();
+	} else if (command == "print"){
+		p1->print();
+	} else if (command == "clean"){
+		p1->cleanPayload();
+		std::cout << "[+] Payload cleaned.\n";
 	} else if (command == "debug"){
 		unsigned int testSize = p1->checkSize();
 		std::cout << "[+] ListSize: " << testSize << "\n";

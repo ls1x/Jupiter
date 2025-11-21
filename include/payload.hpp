@@ -12,15 +12,17 @@ private:
 	unsigned int initialOffset {};
 	std::vector<unsigned long int> payloadList {};
 	std::vector<std::string> nameList {};
-	std::string loadOffset(unsigned int size);
 	std::string payload {};
 
 public:
 	void loadAddress(long unsigned int value, std::string name);
 	void showAddresses() const;
+	void loadOffset(unsigned int size);
 	void addOffset(unsigned int id1, unsigned int id2, std::string name);
 	void deleteAddress(unsigned int index);
-	void generatePayload(unsigned int size);
+	void generatePayload(unsigned int index);
+	void cleanPayload();
+	void addString(std::string str);
 	void print() const;
 	void output(std::string filename) const;
 	unsigned int checkSize() const;

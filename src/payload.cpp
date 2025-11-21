@@ -24,7 +24,7 @@ void Payload::addOffset(unsigned int id1, unsigned int id2, std::string name){
 	listSize++;	
 }
 
-std::string Payload::loadOffset(unsigned int size){
+void Payload::loadOffset(unsigned int size){
 	std::string offset {};
 	char * arr = new char[size + 1];
 	for (unsigned int i{}; i < size; i++){
@@ -34,13 +34,17 @@ std::string Payload::loadOffset(unsigned int size){
 	std::string initial {}; 
 	offset = std::string(arr);
 	delete[] arr;
-	return offset;
+	payload += offset;
 }
 
 void Payload::deleteAddress(unsigned int index){
 	payloadList.erase(payloadList.begin() + index);
 	nameList.erase(nameList.begin() + index);
 	listSize--;
+}
+
+void Payload::addString(std::string str){
+	payload += str;
 }
 
 void Payload::print() const{
@@ -52,42 +56,19 @@ void Payload::print() const{
 	}
 }
 
-void Payload::generatePayload(unsigned int size){
-	std::string result {};
-	std::string initialoffset = this->loadOffset(size);
+void Payload::cleanPayload(){
+	payload = "";
+}
+
+void Payload::generatePayload(unsigned int index){
 	if (listSize > 0){
-		std::string answer1 {};
-		std::cout << "[INFO] You have "  << listSize << " addresses stored.\n";
-		std::cout << "[+] Do you want to inject all of them in order?\n";
-		std::cout << "[+] Use command 'show' to see the current order.\n";
-		std::cout << "[+] Y/N? ";
-		while (true){
-			std::cin >> answer1;
-			if (answer1 == "y" || answer1 == "Y"){
-				std::string * arrHex = new std::string[listSize];
-				for (unsigned int i {}; i < listSize; i++){
-					arrHex[i] = Hex::hexBuild(4, (unsigned int)payloadList[i]);
-					fullPayload += arrHex[i];
-				}
-				delete[] arrHex;
-				payload = fullPayload;
-				std::cout << "[+] Payload generated. Use 'print' to see the results.\n";
-				std::cout << "[+] You can also use 'output' to output it to a file.\n";
-				break;
-			} else if (answer1 == "n" || answer1 == "N"){
-				std::cout << "[+] You chose to not continue.\n";
-				break;
-			} else {
-				std::cout << "[+] Invalid answer. Type Y/N.\n";
-			}
-		}
+		std::string hex =  Hex::hexBuild(4, (unsigned int)payloadList[index]);
+		payload += hex;	
+		std::cout << "[+] Index " << index << " loaded into the payload.\n";
 	} else {
-		std::cout << "[+] Payload generated. Use 'print' to see the results.\n";
-		std::cout << "[+] You can also use 'output' to output it to a file.\n";
-		payload = fullPayload;
+		std::cerr << "[ERR] There are no addresses stored or the index is invalid.\n";
 	}
-	// Essa função é bem mais complexa, eu tenho que antes escolher
-	// quais endereços serão utilizados e qual ordem.
+	// Possivelmente temos problemas aqui com o index sendo maior que o listSize
 }
 
 void Payload::output(std::string filename) const{
