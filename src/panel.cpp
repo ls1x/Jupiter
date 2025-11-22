@@ -175,14 +175,16 @@ int Panel::Generate(Payload * p1) const{
 }
 
 int Panel::String(Payload * p1) const{
+	std::cout << "[+] Type your custom string.\n";
+	this->showName("CustomString");
 	std::string str {};
 	while (true){
-		this->showName("CustomString");
-		std::cout << "[+] Type your custom string.\n"
-		std::cin >> str;
+		getline(std::cin, str, '\n');
 		if (str == "cancel"){
 			std::cout << "[+] You cancelled the operation.\n";
 			return 0;
+		} else if (str == "") {
+			continue;
 		} else {
 			break;
 		}	
